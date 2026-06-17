@@ -1,0 +1,289 @@
+/* ==========================================================================
+   IN KIND STUDIOS — premium interaction layer
+   Identity accent threaded through type + UI, custom cursor (difference
+   blend), media parallax, staggered reveals, elevated hovers.
+   ========================================================================== */
+
+/* ---------- type + palette re-skin: warm, chunky, friendly ---------- */
+
+:root {
+  --font-sans: "Gabarito", "Archivo", "Helvetica Neue", Helvetica, sans-serif;
+  --linen: #efe9df;
+  --linen-deep: #e6dfd2;
+  --charcoal: #262019;
+}
+
+.display,
+.ticker__chunk {
+  font-weight: 700;
+  letter-spacing: -0.022em;
+}
+
+.project-card__title,
+.team-card h3,
+.value-card h3,
+.pillar__title,
+.friends h3,
+.team-note h3 {
+  font-weight: 650;
+}
+
+.pill { font-weight: 600; white-space: nowrap; }
+
+.site-nav a, .text-link { font-weight: 550; }
+
+.text-link { white-space: nowrap; }
+
+/* hero word-masks must never wrap internally (e.g. the "in kind" unit);
+   slight right allowance protects italic-serif overhang from clipping */
+.hw, .hw__i { white-space: nowrap; }
+.hw { padding-right: 0.05em; margin-right: -0.05em; }
+
+/* ---------- the accent becomes the site's voice ---------- */
+
+::selection { background: var(--accent); color: #211e19; }
+
+.display em,
+.ticker__chunk em,
+.value-card h3 em,
+.friends h3 em,
+.mobile-menu nav a em {
+  color: var(--accent);
+}
+
+.ticker__dot { background: var(--accent); }
+
+.closing__doodle { color: var(--accent); }
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+/* thin editorial scrollbar */
+html { scrollbar-width: thin; scrollbar-color: rgba(33, 30, 25, 0.35) transparent; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(33, 30, 25, 0.3); border-radius: 99px; border: 3px solid var(--linen); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- pills: accent on hover, magnetic-ready ---------- */
+
+.pill {
+  transition: transform 0.3s var(--ease-out), translate 0.25s var(--ease-out),
+    background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.pill:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #211e19;
+}
+
+.pill--ghost:hover,
+.pill--cream:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #211e19;
+}
+
+.text-link:hover {
+  opacity: 1;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---------- project cards ---------- */
+
+.project-card__meta { position: relative; }
+
+.project-card__index {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.project-card__title::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 10px;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.3s, transform 0.35s var(--ease-out);
+}
+
+.project-card:hover .project-card__title::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tag {
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.project-card:hover .tag {
+  border-color: var(--charcoal);
+}
+
+.tag:hover {
+  background: var(--charcoal);
+  color: var(--cream);
+  border-color: var(--charcoal);
+}
+
+/* parallax media: oversize the placeholder so translation never shows edges */
+.project-card__media .ph,
+.pillar__media .ph,
+.team-card__media .ph {
+  height: 116%;
+  margin-top: -8%;
+  will-change: transform;
+}
+
+.project-card__media .ph {
+  transform: translateY(var(--py, 0px));
+}
+
+.project-card:hover .project-card__media .ph {
+  transform: translateY(var(--py, 0px)) scale(1.04);
+}
+
+.pillar__media .ph { transform: translateY(var(--py, 0px)); }
+.pillar:hover .pillar__media .ph { transform: translateY(var(--py, 0px)) scale(1.04); }
+
+.team-card__media .ph { transform: translateY(var(--py, 0px)); }
+.team-card:hover .team-card__media .ph { transform: translateY(var(--py, 0px)) scale(1.05); }
+
+/* ---------- pillars: arrow inherits accent ---------- */
+
+.pillar:hover .pillar__arrow {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #211e19;
+}
+
+/* ---------- value cards: accent rule grows on hover ---------- */
+
+.value-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.value-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.value-card:hover::before { transform: scaleX(1); }
+
+/* ---------- logo chips ---------- */
+
+.logo-chip { transition: border-color 0.3s, color 0.3s; }
+.logo-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- footer ---------- */
+
+.footer-col a:hover { color: var(--accent); border-color: var(--accent); }
+.newsletter input:focus { border-color: var(--accent); }
+.footer-base a:hover { color: var(--accent); }
+
+/* ---------- staggered reveals (delay set inline by render) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { transition-delay: var(--rd, 0ms); }
+}
+
+/* ---------- custom cursor (desktop, fine pointer only) ---------- */
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 320;
+  mix-blend-mode: difference;
+  opacity: 0;
+}
+
+html.has-cursor .cursor-dot,
+html.has-cursor .cursor-ring { opacity: 1; }
+
+html.has-cursor.cursor-away .cursor-dot,
+html.has-cursor.cursor-away .cursor-ring { opacity: 0; }
+
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f5f0e4;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(245, 240, 228, 0.9);
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  transition: width 0.28s var(--ease-out), height 0.28s var(--ease-out),
+    background-color 0.28s, border-color 0.28s, opacity 0.3s;
+}
+
+.cursor-ring span {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 540;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: #0a0a0a;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.cursor-ring.is-hover {
+  width: 52px;
+  height: 52px;
+  border-color: #f5f0e4;
+}
+
+.cursor-ring.is-view {
+  width: 72px;
+  height: 72px;
+  background: #f5f0e4;
+  border-color: #f5f0e4;
+}
+
+.cursor-ring.is-view span { opacity: 1; }
+
+.cursor-ring.is-down { width: 26px; height: 26px; }
+.cursor-ring.is-view.is-down { width: 64px; height: 64px; }
+
+html.has-cursor,
+html.has-cursor body,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor input { cursor: none; }

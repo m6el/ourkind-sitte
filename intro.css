@@ -1,0 +1,250 @@
+/* ==========================================================================
+   IN KIND STUDIOS — 3D scroll intro + grain overlay
+   Default state = static SVG fallback. A tiny inline script in <head> adds
+   `intro-3d` or `intro-static` to <html>; intro.js lazy-loads three/GSAP.
+   ========================================================================== */
+
+/* ---------- site-wide grain ---------- */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  opacity: 0.34;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* ---------- intro section: black studio set ---------- */
+
+.intro { background: #0a0a0a; }
+
+/* 3D scroller: hidden until <html> gets .intro-3d */
+.intro__scroller { display: none; height: 350vh; }
+.intro-3d .intro__scroller { display: block; }
+
+.intro__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.intro__stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- scroll hint ---------- */
+
+.intro__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: var(--cream);
+  font-size: 15px;
+  font-weight: 520;
+  text-transform: lowercase;
+  pointer-events: none;
+}
+
+.intro__hint svg { display: block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro__hint svg { animation: hint-bob 2.2s var(--ease-out) infinite; }
+}
+
+@keyframes hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(7px); }
+}
+
+/* ---------- viewfinder overlay (phases 4–6, driven by the timeline) ---------- */
+
+.intro__vf {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: #0d0d0d;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.vf__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 78% 72% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.78) 100%);
+}
+
+.vf__frame {
+  position: absolute;
+  inset: 6.5%;
+  border: 1px solid rgba(245, 240, 228, 0.32);
+  border-radius: 10px;
+  opacity: 0;
+}
+
+.vf__brackets {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(64%, 760px);
+  height: min(34%, 240px);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.vf__c {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--cream);
+}
+
+.vf__c--tl { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+.vf__c--tr { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+.vf__c--bl { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+.vf__c--br { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+
+.vf__wordmark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(34px, 4.6vw, 68px);
+  letter-spacing: 0.06em;
+  color: var(--cream);
+  white-space: nowrap;
+  opacity: 0;
+  will-change: filter, opacity;
+}
+
+.vf__wordmark span { font-weight: 400; letter-spacing: 0.3em; opacity: 0.8; }
+
+.vf__readout {
+  position: absolute;
+  left: 50%;
+  bottom: 9.5%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: clamp(22px, 3.5vw, 48px);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: rgba(245, 240, 228, 0.85);
+  opacity: 0;
+}
+
+.vf__readout .vf__meter { color: var(--accent); }
+
+.vf__rec {
+  position: absolute;
+  right: 9%;
+  top: 9.5%;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px 2px rgba(201, 130, 76, 0.55);
+  opacity: 0;
+}
+
+.vf__blade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: #1b1712;
+}
+
+.vf__blade--top { top: 0; transform: translateY(-101%); border-bottom: 1px solid rgba(245, 240, 228, 0.28); }
+.vf__blade--bottom { bottom: 0; transform: translateY(101%); border-top: 1px solid rgba(245, 240, 228, 0.28); }
+
+/* ---------- hero entrance (3D mode: one continuous cut from the shutter) ---------- */
+
+.hw {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.09em;
+  margin-bottom: -0.09em;
+}
+
+.hw__i { display: inline-block; will-change: transform; }
+
+.hero__cover {
+  position: absolute;
+  inset: 0;
+  background: #0d0d0d;
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ---------- static SVG fallback (default; also mobile / reduced motion) ---------- */
+
+.intro__fallback {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(24px, 4vw, 44px);
+  min-height: 72svh;
+  padding: clamp(80px, 12vh, 140px) var(--pad-x) clamp(48px, 7vh, 90px);
+  background: #0a0a0a;
+}
+
+.intro-3d .intro__fallback { display: none; }
+
+.intro__fallback .logo-mark { color: var(--cream); text-align: center; }
+
+.intro__fallback-art { width: min(880px, 100%); }
+
+.intro__fallback-art svg { width: 100%; height: auto; }
+
+.intro__fallback .mono-note { color: rgba(245, 240, 228, 0.55); text-align: center; }
+
+/* static viewfinder logo frame (fallback's stand-in for phases 4–6) */
+
+.intro__fallback-vf {
+  width: min(880px, 100%);
+  aspect-ratio: 16 / 7;
+  background: #0d0d0d;
+  border-radius: 18px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.intro__fallback-vf::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 75% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.intro__fallback-vf .vf__frame { opacity: 1; inset: 5%; border-radius: 8px; }
+
+.fallback-vf__mark {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(22px, 3.4vw, 44px);
+  letter-spacing: 0.06em;
+  color: var(--cream);
+}
+
+.fallback-vf__mark span { font-weight: 400; letter-spacing: 0.3em; opacity: 0.8; }
+
+.intro__fallback-vf .vf__readout { opacity: 1; bottom: 11%; }

@@ -1,0 +1,143 @@
+/* ==========================================================================
+   IN KIND STUDIOS — 3D scroll intro + grain overlay
+   Default state = static SVG fallback. A tiny inline script in <head> adds
+   `intro-3d` or `intro-static` to <html>; intro.js lazy-loads three/GSAP.
+   ========================================================================== */
+
+/* ---------- site-wide grain ---------- */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  opacity: 0.34;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* ---------- intro section ---------- */
+
+.intro { background: var(--linen); }
+
+/* 3D scroller: hidden until <html> gets .intro-3d */
+.intro__scroller { display: none; height: 350vh; }
+.intro-3d .intro__scroller { display: block; }
+
+.intro__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.intro__stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- diagram labels (projected from 3D anchors) ---------- */
+
+.intro__labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.intro-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+  white-space: nowrap;
+}
+
+.intro-label::before {
+  /* anchor dot */
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--charcoal);
+}
+
+.intro-label__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.intro-label svg { display: block; flex: none; }
+
+.intro-label__text {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 520;
+  letter-spacing: 0.01em;
+  text-transform: lowercase;
+  color: var(--charcoal);
+  transform: translateY(-9px);
+}
+
+.intro-label--right .intro-label__inner { transform: translate(8px, -42px); }
+
+.intro-label--left .intro-label__inner {
+  flex-direction: row-reverse;
+  transform: translate(calc(-100% - 8px), -42px);
+}
+
+/* ---------- scroll hint ---------- */
+
+.intro__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  color: var(--charcoal);
+  font-size: 15px;
+  font-weight: 520;
+  text-transform: lowercase;
+  pointer-events: none;
+}
+
+.intro__hint svg { display: block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro__hint svg { animation: hint-bob 2.2s var(--ease-out) infinite; }
+}
+
+@keyframes hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(7px); }
+}
+
+/* ---------- static SVG fallback (default; also mobile / reduced motion) ---------- */
+
+.intro__fallback {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(24px, 4vw, 44px);
+  min-height: 72svh;
+  padding: clamp(80px, 12vh, 140px) var(--pad-x) clamp(48px, 7vh, 90px);
+}
+
+.intro-3d .intro__fallback { display: none; }
+
+.intro__fallback .logo-mark { color: var(--charcoal); text-align: center; }
+
+.intro__fallback-art { width: min(880px, 100%); }
+
+.intro__fallback-art svg { width: 100%; height: auto; }
+
+.intro__fallback .mono-note { color: var(--charcoal-soft); text-align: center; }
